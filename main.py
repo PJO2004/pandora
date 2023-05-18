@@ -11,6 +11,9 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Folder Hub")
         self.setGeometry(100, 100, 1000, 800)
 
+        # 창을 다른 창들 위에 고정
+        self.setWindowFlag(Qt.WindowStaysOnTopHint)
+
         self.folder_data = []
 
         self.name_input = QLineEdit(self)
