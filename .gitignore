@@ -2,3 +2,4 @@ build/*
 dist/*
 *.spec
 data/*.json
+node_modules
