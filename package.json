@@ -1,7 +1,7 @@
 {
-  "name": "my-electron-app",
+  "name": "folder-hub-jw",
   "version": "1.0.0",
-  "description": "",
+  "description": "folder-hub-jw",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -15,7 +15,7 @@
     "electron-builder": "^24.4.0"
   },
   "build": {
-    "productName": "Start Electron",
+    "productName": "FolderHubJW",
     "appId": "net.jetalab.ex.startelectron",
     "asar": true,
     "mac": {
@@ -24,7 +24,7 @@
       ]
     },
     "dmg": {
-      "title": "Start Electron"
+      "title": "FolderHubJW"
     },
     "win": {
       "target": [
@@ -46,6 +46,9 @@
       "buildResources": "./resources/installer/",
       "output": "./dist/",
       "app": "."
-    }
+    },
+    "extraResources": [
+      "./data"
+    ]
   }
 }
