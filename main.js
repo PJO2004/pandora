@@ -147,11 +147,12 @@ ipcMain.on('add-timer', (event, timer) => {
   // Save the timer data
   const jsonPath = path.join(__dirname, './data/timers.json')
   let timers = []
-
+  
   if (fs.existsSync(jsonPath)) {
     const rawData = fs.readFileSync(jsonPath)
     timers = JSON.parse(rawData)
   }
+  
   timers.push(timer)
   fs.writeFileSync(jsonPath, JSON.stringify(timers, null, 2))
 

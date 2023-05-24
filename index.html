@@ -62,7 +62,7 @@
             </div>
             <div id="listAreaTimer" class="wrap">
                 <div class="button-wrap">
-                    <button id="deleteButtonTimer">Delete Folders</button>
+                    <button id="deleteButtonTimer">Delete Timers</button>
                 </div>
                 <ul id="timerList">
                     <!-- Timer list will be dynamically populated here -->
@@ -129,7 +129,7 @@
                 // timer
                 document.getElementById('addButtonTimer').addEventListener('click', function() {
                     const TimerName = document.getElementById('timerName').value
-                    const TimerDate = document.getElementById('timerDate').values
+                    const TimerDate = document.getElementById('timerDate').value
 
                     ipcRenderer.send('add-timer', { name: TimerName, date: TimerDate })
                 })
