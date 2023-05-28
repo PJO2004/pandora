@@ -1,198 +1,218 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>FolderHub</title>
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header>
-            <div class="wrap">
-                <h1>FolderHub</h1>
-                <a href="https://github.com/PJO2004">by Jung</a>
+<head>
+    <title>FolderHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <div class="wrap">
+        <h1>FolderHub</h1>
+        <a href="https://github.com/PJO2004">by Jung</a>
+    </div>
+</header>
+<main>
+    <div id="createArea">
+        <div class="main-wrap">
+            <!-- folder name -->
+            <div class="input-wrap">
+                <label for="folderName">Name</label><br>
+                <input type="text" id="folderName" name="folderName"><br>
             </div>
-        </header>
-        <main>
-            <div id="createArea">
-                <div class="main-wrap">
-                    <!-- folder name -->
-                    <div class="input-wrap">
-                        <label for="folderName">Name</label><br>
-                        <input type="text" id="folderName" name="folderName"><br>
-                    </div>
-                    
-                    <!-- folder path -->
-                    <div class="input-wrap">
-                        <label for="folderPath">Path</label><br>
-                        <input type="text" id="folderPath" name="folderPath"><br>
-                    </div>
-                    
-                    <!-- button -->
-                    <div class="button-wrap">
-                        <button id="addButtonFolder">Add Folder</button>
-                    </div>
-                </div>
+
+            <!-- folder path -->
+            <div class="input-wrap">
+                <label for="folderPath">Path</label><br>
+                <input type="text" id="folderPath" name="folderPath"><br>
             </div>
-            <div id="listAreaFolder" class="wrap">
-                <div class="button-wrap">
-                    <button id="deleteButtonFolder">Delete Folders</button>
-                </div>
-                <ul id="folderList">
-                    <!-- Folder list will be dynamically populated here -->
-                </ul>
+
+            <!-- button -->
+            <div class="button-wrap">
+                <button id="addButtonFolder">Add Folder</button>
             </div>
-            <div id="timerArea">
-                <div class="main-wrap">
-                    <!-- timer name -->
-                    <div class="input-wrap">
-                        <label for="timerName">Name</label>
-                        <input type="text" id="timerName" name="timerName">
-                    </div>
-                    
-                    <!-- time check -->
-                    <div class="input-wrap">
-                        <label for="timerDate">Date</label>
-                        <input type="date" id="timerDate" name="timerDate">
-                    </div>
-                    
-                    <!-- button -->
-                    <div class="button-wrap">
-                        <button id="addButtonTimer">Add Timer</button>
-                    </div>
-                </div>
+        </div>
+    </div>
+    <div id="listAreaFolder" class="wrap">
+        <div class="button-wrap">
+            <button id="deleteButtonFolder">Delete Folders</button>
+        </div>
+        <ul id="folderList">
+            <!-- Folder list will be dynamically populated here -->
+        </ul>
+    </div>
+    <div id="timerArea">
+        <div class="main-wrap">
+            <!-- timer name -->
+            <div class="input-wrap">
+                <label for="timerName">Name</label>
+                <input type="text" id="timerName" name="timerName">
             </div>
-            <div id="listAreaTimer" class="wrap">
-                <div class="button-wrap">
-                    <button id="deleteButtonTimer">Delete Timers</button>
-                </div>
-                <ul id="timerList">
-                    <!-- Timer list will be dynamically populated here -->
-                </ul>
+
+            <!-- time check -->
+            <div class="input-wrap">
+                <label for="timerDate">Date</label>
+                <input type="date" id="timerDate" name="timerDate">
             </div>
-            <script>
-                const { ipcRenderer, shell } = require('electron');
 
-                window.ipcRenderer = ipcRenderer;
-                window.shell = shell;
+            <!-- button -->
+            <div class="button-wrap">
+                <button id="addButtonTimer">Add Timer</button>
+            </div>
+        </div>
+    </div>
+    <div id="listAreaTimer" class="wrap">
+        <div class="button-wrap">
+            <button id="deleteButtonTimer">Delete Timers</button>
+        </div>
+        <ul id="timerList">
+            <!-- Timer list will be dynamically populated here -->
+        </ul>
+    </div>
+    <script>
+        const { ipcRenderer, shell } = require('electron');
 
-                // folder
-                document.getElementById('addButtonFolder').addEventListener('click', function() {
-                    const folderName = document.getElementById('folderName').value
-                    const folderPath = document.getElementById('folderPath').value
+        window.ipcRenderer = ipcRenderer;
+        window.shell = shell;
 
-                    ipcRenderer.send('add-folder', { name: folderName, path: folderPath })
+        // folder
+        document.getElementById('addButtonFolder').addEventListener('click', function() {
+            const folderName = document.getElementById('folderName').value
+            const folderPath = document.getElementById('folderPath').value
+
+            ipcRenderer.send('add-folder', { name: folderName, path: folderPath, coler: folderIcon })
+        })
+
+        document.getElementById('deleteButtonFolder').addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('#folderList input[type="checkbox"]:checked')
+
+            const foldersToDelete = []
+            for (const checkbox of checkboxes) {
+                foldersToDelete.push(checkbox.value)
+            }
+
+            ipcRenderer.send('delete-folders', foldersToDelete)
+        })
+
+        ipcRenderer.on('folder-data', (event, folders) => {
+            populateFolderList(folders)
+        })
+
+        function populateFolderList(folders) {
+            const folderList = document.getElementById('folderList')
+            folderList.innerHTML = ''
+
+            for (const folder of folders) {
+                const listItem = document.createElement('li')
+
+                const checkbox = document.createElement('input')
+                checkbox.type = 'checkbox'
+                checkbox.value = folder.path
+                listItem.appendChild(checkbox)
+
+                const icon = document.createElement('span')
+                icon.textContent = '📁 '
+                listItem.appendChild(icon)
+
+                const link = document.createElement('a')
+                link.textContent = folder.name
+                link.href = '#'
+                link.addEventListener('click', function(e) {
+                    e.preventDefault()
+                    shell.openPath(folder.path)
                 })
+                listItem.appendChild(link)
 
-                document.getElementById('deleteButtonFolder').addEventListener('click', function() {
-                const checkboxes = document.querySelectorAll('#folderList input[type="checkbox"]:checked')
+                folderList.appendChild(listItem)
+            }
+        }
 
-                const foldersToDelete = []
-                for (const checkbox of checkboxes) {
-                    foldersToDelete.push(checkbox.value)
-                }
+        // timer
+        document.getElementById('addButtonTimer').addEventListener('click', function() {
+            const TimerName = document.getElementById('timerName').value
+            const TimerDate = document.getElementById('timerDate').value
 
-                ipcRenderer.send('delete-folders', foldersToDelete)
-                })
+            ipcRenderer.send('add-timer', { name: TimerName, date: TimerDate })
+        })
 
-                ipcRenderer.on('folder-data', (event, folders) => {
-                    populateFolderList(folders)
-                })
+        document.getElementById('deleteButtonTimer').addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('#timerList input[type="checkbox"]:checked')
 
-                function populateFolderList(folders) {
-                    const folderList = document.getElementById('folderList')
-                    folderList.innerHTML = ''
+            const timersToDelete = []
+            for (const checkbox of checkboxes) {
+                timersToDelete.push(checkbox.value)
+            }
 
-                    for (const folder of folders) {
-                        const listItem = document.createElement('li')
+            ipcRenderer.send('delete-timers', timersToDelete)
+        })
 
-                        const checkbox = document.createElement('input')
-                        checkbox.type = 'checkbox'
-                        checkbox.value = folder.path
-                        listItem.appendChild(checkbox)
+        ipcRenderer.on('timer-data', (event, timers) => {
+            populateTimerList(timers)
+        })
 
-                        const icon = document.createElement('span')
-                        icon.textContent = '📁 '
-                        listItem.appendChild(icon)
+        function populateTimerList(timers) {
+            const timerList = document.getElementById('timerList')
+            timerList.innerHTML = ''
 
-                        const link = document.createElement('a')
-                        link.textContent = folder.name
-                        link.href = '#'
-                        link.addEventListener('click', function(e) {
-                            e.preventDefault()
-                            shell.openPath(folder.path)
-                        })
-                        listItem.appendChild(link)
+            for (const timer of timers) {
+                const listItem = document.createElement('li')
 
-                        folderList.appendChild(listItem)
-                    }
-                }
-                
-                // timer
-                document.getElementById('addButtonTimer').addEventListener('click', function() {
-                    const TimerName = document.getElementById('timerName').value
-                    const TimerDate = document.getElementById('timerDate').value
+                const checkbox = document.createElement('input')
+                checkbox.type = 'checkbox'
+                checkbox.value = timer.name
+                listItem.appendChild(checkbox)
 
-                    ipcRenderer.send('add-timer', { name: TimerName, date: TimerDate })
-                })
+                const nameSpan = document.createElement('span')
+                nameSpan.textContent = `[${timer.name}][${timer.date}] 의 남은 날짜 : `
+                listItem.appendChild(nameSpan)
 
-                ipcRenderer.on('timer-data', (event, timers) => {
-                    populateTimerList(timers)
-                })
+                const dateSpan = document.createElement('span')
 
-                function populateTimerList(timers) {
-                    const timerList = document.getElementById('timerList')
-                    timerList.innerHTML = ''
+                const currentTime = new Date()
+                const baseTime = new Date(timer.date)
 
-                    for (const timer of timers) {
-                        const listItem = document.createElement('li')
+                // 날짜를 밀리초로 변환한 후 , 차이 계산
+                const diffInMilliseconds = Math.abs(
+                    currentTime.getTime() - baseTime.getTime()
+                )
 
-                        const checkbox = document.createElement('input')
-                        checkbox.type = 'checkbox'
-                        checkbox.value = timer.name
-                        listItem.appendChild(checkbox)
+                // 밀리초를 일로 변환
+                const diffInDays = Math.ceil(diffInMilliseconds / (1000 * 60 *60 *24))
+                dateSpan.textContent = `${diffInDays}일`
 
-                        const nameSpan = document.createElement('span')
-                        nameSpan.textContent = timer.name
-                        nameSpan.textContent += '의 남은 시간 : '
-                        listItem.appendChild(nameSpan)
+                listItem.appendChild(dateSpan)
+                timerList.appendChild(listItem)
+            }
+        }
 
-                        const dateSpan = document.createElement('span')
-                        dateSpan.textContent = timer.date
-                        listItem.appendChild(dateSpan)
+        // display
+        ipcRenderer.on('show-add-folder', () => {
+            document.getElementById('createArea').style.display = 'block'
+            document.getElementById('listAreaFolder').style.display = 'none'
+            document.getElementById('timerArea').style.display = 'none'
+            document.getElementById('listAreaTimer').style.display = 'none'
+        })
 
-                        timerList.appendChild(listItem)
-                    }
-                }
+        ipcRenderer.on('show-folder-list', () => {
+            document.getElementById('createArea').style.display = 'none'
+            document.getElementById('listAreaFolder').style.display = 'block'
+            document.getElementById('timerArea').style.display = 'none'
+            document.getElementById('listAreaTimer').style.display = 'none'
+        })
 
-                // display
-                ipcRenderer.on('show-add-folder', () => {
-                    document.getElementById('createArea').style.display = 'block'
-                    document.getElementById('listAreaFolder').style.display = 'none'
-                    document.getElementById('timerArea').style.display = 'none'
-                    document.getElementById('listAreaTimer').style.display = 'none'
-                })
-                
-                ipcRenderer.on('show-folder-list', () => {
-                    document.getElementById('createArea').style.display = 'none'
-                    document.getElementById('listAreaFolder').style.display = 'block'
-                    document.getElementById('timerArea').style.display = 'none'
-                    document.getElementById('listAreaTimer').style.display = 'none'
-                })
-                
-                ipcRenderer.on('show-add-timer', () => {
-                    document.getElementById('createArea').style.display = 'none'
-                    document.getElementById('listAreaFolder').style.display = 'none'
-                    document.getElementById('timerArea').style.display = 'block'
-                    document.getElementById('listAreaTimer').style.display = 'none'
-                })
+        ipcRenderer.on('show-add-timer', () => {
+            document.getElementById('createArea').style.display = 'none'
+            document.getElementById('listAreaFolder').style.display = 'none'
+            document.getElementById('timerArea').style.display = 'block'
+            document.getElementById('listAreaTimer').style.display = 'none'
+        })
 
-                ipcRenderer.on('show-timer-list', () => {
-                    document.getElementById('createArea').style.display = 'none'
-                    document.getElementById('listAreaFolder').style.display = 'none'
-                    document.getElementById('timerArea').style.display = 'none'
-                    document.getElementById('listAreaTimer').style.display = 'block'
-                })
-                </script>
-        </main>
-    </body>
-    </html>
-    
+        ipcRenderer.on('show-timer-list', () => {
+            document.getElementById('createArea').style.display = 'none'
+            document.getElementById('listAreaFolder').style.display = 'none'
+            document.getElementById('timerArea').style.display = 'none'
+            document.getElementById('listAreaTimer').style.display = 'block'
+        })
+    </script>
+</main>
+</body>
+</html>

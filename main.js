@@ -5,13 +5,10 @@ const fs = require('fs')
 
 let win
 
-function createWindow () {
+function createWindow() {
   const { screen } = require('electron')
-  const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
   win = new BrowserWindow({
-    // width: width * 0.8, // 현재 화면의 80% 크기로 설정
-    // height: height * 0.8,
     width: 300,
     height: 400,
     webPreferences: {
@@ -19,7 +16,7 @@ function createWindow () {
       contextIsolation: false,
       enableRemoteModule: true
     },
-    alwaysOnTop: true,
+    alwaysOnTop: true
   })
 
   win.loadFile('index.html')
@@ -60,10 +57,11 @@ function createWindow () {
 
   // Send folder data when app is ready
   sendFolderData()
+  sendTimerData()
 }
 
 function sendFolderData() {
-  const jsonPath = path.join(__dirname, './data/folders.json')
+  const jsonPath = path.join(__dirname, 'folders.json')
   let folders = []
 
   if (fs.existsSync(jsonPath)) {
@@ -79,19 +77,31 @@ ipcMain.on('add-folder', (event, folder) => {
   if (!fs.existsSync(folder.path)) {
     dialog.showMessageBoxSync(win, {
       type: 'warning',
-      message: 'The path does not exist',
+      message: '존재하지 않는 폴더 주소입니다.',
       buttons: ['OK']
     })
     return
   }
 
   // Save the folder data
-  const jsonPath = path.join(__dirname, './data/folders.json')
+  const jsonPath = path.join(__dirname, 'folders.json')
   let folders = []
 
   if (fs.existsSync(jsonPath)) {
     const rawData = fs.readFileSync(jsonPath)
     folders = JSON.parse(rawData)
+  }
+
+  // same folder path check
+  for (const f of folders) {
+    if (f.path == folder.path) {
+      dialog.showMessageBoxSync(win, {
+        type: 'warning',
+        message: '이미 존재하는 폴더 주소입니다.',
+        button: ['OK']
+      })
+      return
+    }
   }
 
   folders.push(folder)
@@ -102,7 +112,7 @@ ipcMain.on('add-folder', (event, folder) => {
 })
 
 ipcMain.on('delete-folders', (event, foldersToDelete) => {
-  const jsonPath = path.join(__dirname, './data/folders.json')
+  const jsonPath = path.join(__dirname, 'folders.json')
   let folders = []
 
   if (fs.existsSync(jsonPath)) {
@@ -117,6 +127,62 @@ ipcMain.on('delete-folders', (event, foldersToDelete) => {
   sendFolderData()
 })
 
+function sendTimerData() {
+  const jsonPath = path.join(__dirname, 'timers.json')
+  let timers = []
+
+  if (fs.existsSync(jsonPath)) {
+    const rawData = fs.readFileSync(jsonPath)
+    timers = JSON.parse(rawData)
+  }
+
+  win.webContents.send('timer-data', timers)
+}
+
+ipcMain.on('add-timer', (event, timer) => {
+  // Save the timer data
+  const jsonPath = path.join(__dirname, 'timers.json')
+  let timers = []
+
+  if (fs.existsSync(jsonPath)) {
+    const rawData = fs.readFileSync(jsonPath)
+    timers = JSON.parse(rawData)
+  }
+
+  for (const t of timers) {
+    if (timer.name == t.name) {
+      dialog.showMessageBoxSync(win, {
+        type: 'warning',
+        message: '이미 존재하는 이름입니다.',
+        button: ['OK']
+      })
+      return
+    }
+  }
+
+  timers.push(timer)
+  fs.writeFileSync(jsonPath, JSON.stringify(timers, null, 2))
+
+  // Send the updated timer data
+  sendTimerData()
+})
+
+ipcMain.on('delete-timers', (event, timersToDelete) => {
+  const jsonPath = path.join(__dirname, 'timers.json')
+  let timers = []
+
+  if (fs.existsSync(jsonPath)) {
+    const rawData = fs.readFileSync(jsonPath)
+    timers = JSON.parse(rawData)
+  }
+
+  timers = timers.filter(timer => !timersToDelete.includes(timer.name))
+  fs.writeFileSync(jsonPath, JSON.stringify(timers, null, 2))
+
+  // Send the updated timer data
+  sendTimerData()
+})
+
 app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
@@ -129,38 +195,4 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
-})
-
-// timer
-function sendTimerData() {
-  const jsonPath = path.join(__dirname, './data/timers.json')
-  let timers = []
-  
-  if (fs.existsSync(jsonPath)) {
-    const rawData = fs.readFileSync(jsonPath)
-    timers = JSON.parse(rawData)
-  }
-  win.webContents.send('timer-data', timers)
-}
-
-ipcMain.on('add-timer', (event, timer) => {
-  // Save the timer data
-  const jsonPath = path.join(__dirname, './data/timers.json')
-  let timers = []
-  
-  if (fs.existsSync(jsonPath)) {
-    const rawData = fs.readFileSync(jsonPath)
-    timers = JSON.parse(rawData)
-  }
-  
-  timers.push(timer)
-  fs.writeFileSync(jsonPath, JSON.stringify(timers, null, 2))
-
-  // send the updated timer data
-  sendTimerData()
-})
-
-// Call sendTimerData when the app is ready
-app.whenReady().then(() => {
-  sendTimerData()
 })
