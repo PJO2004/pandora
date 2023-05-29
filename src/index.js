@@ -19,7 +19,7 @@ function createWindow() {
     alwaysOnTop: true
   })
 
-  win.loadFile('index.html')
+  win.loadFile('./src/index.html')
 
   const menu = Menu.buildFromTemplate([
     {
@@ -52,6 +52,8 @@ function createWindow() {
       ]
     }
   ])
+  // developer tools
+  // win.webContents.openDevTools();
 
   Menu.setApplicationMenu(menu)
 
@@ -61,7 +63,7 @@ function createWindow() {
 }
 
 function sendFolderData() {
-  const jsonPath = path.join(__dirname, 'folders.json')
+  const jsonPath = path.join(__dirname, './data/folders.json')
   let folders = []
 
   if (fs.existsSync(jsonPath)) {
@@ -73,6 +75,7 @@ function sendFolderData() {
 }
 
 ipcMain.on('add-folder', (event, folder) => {
+  console.log("add-folder")
   // Check if the path exists
   if (!fs.existsSync(folder.path)) {
     dialog.showMessageBoxSync(win, {
@@ -84,7 +87,7 @@ ipcMain.on('add-folder', (event, folder) => {
   }
 
   // Save the folder data
-  const jsonPath = path.join(__dirname, 'folders.json')
+  const jsonPath = path.join(__dirname, './data/folders.json')
   let folders = []
 
   if (fs.existsSync(jsonPath)) {
@@ -112,7 +115,7 @@ ipcMain.on('add-folder', (event, folder) => {
 })
 
 ipcMain.on('delete-folders', (event, foldersToDelete) => {
-  const jsonPath = path.join(__dirname, 'folders.json')
+  const jsonPath = path.join(__dirname, './data/folders.json')
   let folders = []
 
   if (fs.existsSync(jsonPath)) {
@@ -128,7 +131,7 @@ ipcMain.on('delete-folders', (event, foldersToDelete) => {
 })
 
 function sendTimerData() {
-  const jsonPath = path.join(__dirname, 'timers.json')
+  const jsonPath = path.join(__dirname, './data/timers.json')
   let timers = []
 
   if (fs.existsSync(jsonPath)) {
@@ -141,7 +144,7 @@ function sendTimerData() {
 
 ipcMain.on('add-timer', (event, timer) => {
   // Save the timer data
-  const jsonPath = path.join(__dirname, 'timers.json')
+  const jsonPath = path.join(__dirname, './data/timers.json')
   let timers = []
 
   if (fs.existsSync(jsonPath)) {
@@ -168,7 +171,7 @@ ipcMain.on('add-timer', (event, timer) => {
 })
 
 ipcMain.on('delete-timers', (event, timersToDelete) => {
-  const jsonPath = path.join(__dirname, 'timers.json')
+  const jsonPath = path.join(__dirname, './data/timers.json')
   let timers = []
 
   if (fs.existsSync(jsonPath)) {

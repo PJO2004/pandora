@@ -44,7 +44,7 @@ input wrap
     justify-content: center;
     width: 100%;
 }
-.input-wrap > input {
+.input-wrap > input, .input-wrap > select {
     width: 60%;
     padding: 2px;
 }

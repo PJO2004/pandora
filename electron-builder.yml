@@ -1,0 +1,8 @@
+appId: net.jetalab.ex.startelectron
+productName: FolderHub JW
+
+directories:
+  output: ./dist/
+
+files:
+  - ./src/**/*

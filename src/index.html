@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FolderHub</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+<header>
+    <div class="wrap">
+        <h1>FolderHub</h1>
+        <a href="https://github.com/PJO2004">by Jung</a>
+    </div>
+</header>
+<main>
+    <div id="createArea">
+        <div class="main-wrap">
+            <!-- folder name -->
+            <div class="input-wrap">
+                <label for="folderName">Name</label><br>
+                <input type="text" id="folderName" name="folderName"><br>
+            </div>
+
+            <!-- folder path -->
+            <div class="input-wrap">
+                <label for="folderPath">Path</label><br>
+                <input type="text" id="folderPath" name="folderPath"><br>
+            </div>
+
+            <!-- folder icon color -->
+            <div class="input-wrap">
+                <label for="folderIconColor">IconColor</label><br>
+                <select name="folderIconColor" id="folderIconColor">
+                    <option value="black">Black</option>
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="purple">Purple</option>
+                    <option value="red">Red</option>
+                    <option value="yellow">Yellow</option>
+                </select><br>
+            </div>
+
+            <!-- button -->
+            <div class="button-wrap">
+                <button id="addButtonFolder">Add Folder</button>
+            </div>
+        </div>
+    </div>
+    <div id="listAreaFolder" class="wrap">
+        <div class="button-wrap">
+            <button id="deleteButtonFolder">Delete Folders</button>
+        </div>
+        <ul id="folderList">
+            <!-- Folder list will be dynamically populated here -->
+        </ul>
+    </div>
+    <div id="timerArea">
+        <div class="main-wrap">
+            <!-- timer name -->
+            <div class="input-wrap">
+                <label for="timerName">Name</label>
+                <input type="text" id="timerName" name="timerName">
+            </div>
+
+            <!-- time check -->
+            <div class="input-wrap">
+                <label for="timerDate">Date</label>
+                <input type="date" id="timerDate" name="timerDate">
+            </div>
+
+            <!-- button -->
+            <div class="button-wrap">
+                <button id="addButtonTimer">Add Timer</button>
+            </div>
+        </div>
+    </div>
+    <div id="listAreaTimer" class="wrap">
+        <div class="button-wrap">
+            <button id="deleteButtonTimer">Delete Timers</button>
+        </div>
+        <ul id="timerList">
+            <!-- Timer list will be dynamically populated here -->
+        </ul>
+    </div>
+    <script src="./app.js"></script>
+</main>
+</body>
+</html>

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "사용자 폴더 모음",
+    "path": "D:\\사용자 폴더 모음",
+    "color": "yellow"
+  },
+  {
+    "name": "music",
+    "path": "D:\\사용자 폴더 모음\\음악 작성 프로그램",
+    "color": "black"
+  },
+  {
+    "name": "깃 프로젝트 관련 폴더",
+    "path": "D:\\사용자 폴더 모음\\git_project",
+    "color": "purple"
+  }
+]
