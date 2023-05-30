@@ -1,8 +1,11 @@
 appId: net.jetalab.ex.startelectron
-productName: FolderHub JW
+productName: pandora
 
 directories:
   output: ./dist/
+
+win:
+  icon: ./src/icon/yellow.png
 
 files:
   - ./src/**/*

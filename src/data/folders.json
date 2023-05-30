@@ -1,17 +1,12 @@
 [
   {
-    "name": "사용자 폴더 모음",
-    "path": "D:\\사용자 폴더 모음",
+    "name": "SorceGen 문서화 폴더",
+    "path": "C:\\Users\\pc\\Documents\\사용자 폴더 모음\\lubentis\\2023\\소스 제너레이터",
     "color": "yellow"
   },
   {
-    "name": "music",
-    "path": "D:\\사용자 폴더 모음\\음악 작성 프로그램",
+    "name": "Git 프로젝트 폴더",
+    "path": "C:\\Users\\pc\\Documents\\사용자 폴더 모음\\git_project",
     "color": "black"
-  },
-  {
-    "name": "깃 프로젝트 관련 폴더",
-    "path": "D:\\사용자 폴더 모음\\git_project",
-    "color": "purple"
   }
 ]

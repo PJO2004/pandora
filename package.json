@@ -1,7 +1,7 @@
 {
-  "name": "folder-hub-jw",
+  "name": "pandora",
   "version": "1.0.0",
-  "description": "folder-hub-jw",
+  "description": "pandora",
   "main": "./src/index.js",
   "scripts": {
     "start": "electron .",

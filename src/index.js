@@ -6,11 +6,10 @@ const fs = require('fs')
 let win
 
 function createWindow() {
-  const { screen } = require('electron')
-
   win = new BrowserWindow({
     width: 300,
     height: 400,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -52,6 +51,11 @@ function createWindow() {
       ]
     }
   ])
+  // 사용자 지정 타이틀
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.send('set-custom-title')
+  })
+
   // developer tools
   // win.webContents.openDevTools();
 
